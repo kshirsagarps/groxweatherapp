@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">GroxWeatherApp</string>
+    <string name="today">TODAY</string>
+    <string name="five_days">5 DAYS</string>
+    <string name="ten_days">10 DAYS</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+    <string name="error_occurred">Error Occurred</string>
+    <string name="retry_again_to_continue">Retry Again To Continue</string>
+</resources>
