@@ -17,12 +17,11 @@ public class WeatherRequestCommand implements Command {
 
     @Override
     public Observable<Action> actions() {
-        WeatherRefreshAction action = new WeatherRefreshAction();
         return new WeatherApiClient()
             .getWeather(requestMode)
             .subscribeOn(Schedulers.io())
             .map(weatherResponse -> (Action) new WeatherSuccessAction(weatherResponse))
             .onErrorReturn(WeatherErrorAction::new)
-            .startWith(action);
+            .startWith(new WeatherRefreshAction());
     }
 }
