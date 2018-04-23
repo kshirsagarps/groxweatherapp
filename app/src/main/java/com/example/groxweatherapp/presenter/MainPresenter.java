@@ -23,7 +23,7 @@ public class MainPresenter {
     public void attachPresenter(MainView mainView, WeatherModelStore weatherModelStore) {
         this.mainView = mainView;
         this.weatherModelStore = weatherModelStore;
-        subscriptions.add(getInitiatedAction().subscribe(weatherModelStore::dispatch, MainPresenter::onError));
+        subscriptions.add(createActionsForInitiatedState().subscribe(weatherModelStore::dispatch, MainPresenter::onError));
         subscriptions.add(isSuccess().subscribe(this::onSuccess, MainPresenter::onError));
         subscriptions.add(isRefreshing().subscribe(ignore -> onRefresh(), MainPresenter::onError));
         subscriptions.add(isError().subscribe(this::onError, MainPresenter::onError));
@@ -42,7 +42,7 @@ public class MainPresenter {
         return new WeatherRequestCommand(requestMode).actions();
     }
 
-    private Observable<Action> getInitiatedAction() {
+    private Observable<Action> createActionsForInitiatedState() {
         return isInitiated()
             .map(model -> new WeatherRequestCommand(TODAY))
             .flatMap(weatherCommand -> weatherCommand.actions());

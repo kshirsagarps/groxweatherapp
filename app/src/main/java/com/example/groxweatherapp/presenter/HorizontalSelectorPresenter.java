@@ -47,20 +47,20 @@ public class HorizontalSelectorPresenter {
 
     public void onTodayClicked() {
         horizontalSelectorView.onTodaySelected();
-        subscriptions.add(createRefreshCommandAction(TODAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
+        subscriptions.add(createRequestCommandActions(TODAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
     }
 
     public void onFiveDayClicked() {
         horizontalSelectorView.onFiveDaySelected();
-        subscriptions.add(createRefreshCommandAction(FIVE_DAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
+        subscriptions.add(createRequestCommandActions(FIVE_DAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
     }
 
     public void onTenDayClicked() {
         horizontalSelectorView.onTenDaySelected();
-        subscriptions.add(createRefreshCommandAction(TEN_DAY).cache().subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
+        subscriptions.add(createRequestCommandActions(TEN_DAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
     }
 
-    private Observable<Action> createRefreshCommandAction(@RequestMode int requestMode) {
+    private Observable<Action> createRequestCommandActions(@RequestMode int requestMode) {
         final WeatherRequestCommand weatherRequestCommand = new WeatherRequestCommand(requestMode);
         return weatherRequestCommand.actions();
     }
