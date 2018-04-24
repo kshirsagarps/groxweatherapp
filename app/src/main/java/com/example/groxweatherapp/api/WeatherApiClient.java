@@ -34,17 +34,15 @@ public class WeatherApiClient {
     public static int MIN = 40;
 
     @Retention(SOURCE)
-    @IntDef({INVALID, TODAY, FIVE_DAY, TEN_DAY})
+    @IntDef({TODAY, FIVE_DAY, TEN_DAY})
     public @interface RequestMode {}
 
-    public static final int INVALID = -1;
     public static final int TODAY = 0;
     public static final int FIVE_DAY = 1;
     public static final int TEN_DAY = 2;
 
     public Observable<WeatherResponse> getWeather(@RequestMode int requestMode) {
         WeatherResponse weatherResponse = new WeatherResponse();
-        weatherResponse.requestMode = requestMode;
         weatherResponse.weathers = createWeatherForRequest(requestMode);
         Observable<WeatherResponse> observable = Observable.just(weatherResponse);
         if (random.nextInt() % ERROR_RATE == 0) {

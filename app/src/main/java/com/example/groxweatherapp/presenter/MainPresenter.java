@@ -4,13 +4,15 @@ import com.example.groxweatherapp.api.WeatherApiClient;
 import com.example.groxweatherapp.grox.WeatherModelStore;
 import com.example.groxweatherapp.grox.WeatherRequestCommand;
 import com.example.groxweatherapp.model.WeatherModel;
-import com.example.groxweatherapp.model.WeatherModel.WeatherModelState;
 import com.example.groxweatherapp.view.MainView;
 import com.groupon.grox.Action;
+
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.example.groxweatherapp.api.WeatherApiClient.TODAY;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.ERROR;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.REFRESH;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.SUCCESS;
 import static com.groupon.grox.RxStores.states;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
@@ -23,9 +25,8 @@ public class MainPresenter {
     public void attachPresenter(MainView mainView, WeatherModelStore weatherModelStore) {
         this.mainView = mainView;
         this.weatherModelStore = weatherModelStore;
-        subscriptions.add(createActionsForInitiatedState().subscribe(weatherModelStore::dispatch, MainPresenter::onError));
         subscriptions.add(isSuccess().subscribe(this::onSuccess, MainPresenter::onError));
-        subscriptions.add(isRefreshing().subscribe(ignore -> onRefresh(), MainPresenter::onError));
+        subscriptions.add(isRefreshing().subscribe(weatherModelStore::dispatch, MainPresenter::onError));
         subscriptions.add(isError().subscribe(this::onError, MainPresenter::onError));
     }
 
@@ -42,13 +43,7 @@ public class MainPresenter {
         return new WeatherRequestCommand(requestMode).actions();
     }
 
-    private Observable<Action> createActionsForInitiatedState() {
-        return isInitiated()
-            .map(model -> new WeatherRequestCommand(TODAY))
-            .flatMap(weatherCommand -> weatherCommand.actions());
-    }
-
-    private void onRefresh() {
+    private void onRefresh(WeatherModel weatherModel) {
         mainView.showSpinner();
         mainView.hideList();
     }
@@ -66,28 +61,25 @@ public class MainPresenter {
         mainView.showErrorDialog();
     }
 
-    private Observable<WeatherModel> isInitiated() {
-        return states(weatherModelStore)
-            .observeOn(mainThread())
-            .filter(model -> model.getModelState() == WeatherModelState.INITIATED);
-    }
-
     private Observable<WeatherModel> isSuccess() {
         return states(weatherModelStore)
             .observeOn(mainThread())
-            .filter(model -> model.getModelState() == WeatherModelState.SUCCESS);
+            .filter(model -> model.getModelState() == SUCCESS);
     }
 
     private Observable<WeatherModel> isError() {
         return states(weatherModelStore)
             .observeOn(mainThread())
-            .filter(model -> model.getModelState() == WeatherModelState.ERROR);
+            .filter(model -> model.getModelState() == ERROR);
     }
 
-    private Observable<WeatherModel> isRefreshing() {
+    private Observable<Action> isRefreshing() {
         return states(weatherModelStore)
             .observeOn(mainThread())
-            .filter(model -> model.getModelState() == WeatherModelState.REFRESHING);
+            .filter(model -> model.getModelState() == REFRESH)
+            .doOnNext(this::onRefresh)
+            .map(model -> new WeatherRequestCommand(weatherModelStore.getState().getRequestMode()))
+            .flatMap(weatherCommand -> weatherCommand.actions());
     }
 
     private static void onError(Throwable throwable) {

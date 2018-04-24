@@ -5,8 +5,8 @@ import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.groxweatherapp.api.WeatherApiClient.INVALID;
-import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.INITIATED;
+import static com.example.groxweatherapp.api.WeatherApiClient.TODAY;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.REFRESH;
 
 @AutoValue
 public abstract class WeatherModel {
@@ -14,7 +14,7 @@ public abstract class WeatherModel {
     public static WeatherModel INITIAL_STATE = WeatherModel.builder().build();
 
     public enum WeatherModelState {
-        INITIATED, REFRESHING, SUCCESS, ERROR
+        REFRESH, SUCCESS, ERROR
     }
 
     @RequestMode
@@ -28,8 +28,8 @@ public abstract class WeatherModel {
 
     public static Builder builder() {
         return new AutoValue_WeatherModel.Builder()
-            .setModelState(INITIATED)
-            .setRequestMode(INVALID)
+            .setModelState(REFRESH)
+            .setRequestMode(TODAY)
             .setWeather(new ArrayList<>());
     }
 

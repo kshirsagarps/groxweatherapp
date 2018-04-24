@@ -21,7 +21,6 @@ public class WeatherRequestCommand implements Command {
             .getWeather(requestMode)
             .subscribeOn(Schedulers.io())
             .map(weatherResponse -> (Action) new WeatherSuccessAction(weatherResponse))
-            .onErrorReturn(WeatherErrorAction::new)
-            .startWith(new WeatherRefreshAction());
+            .onErrorReturn(WeatherErrorAction::new);
     }
 }

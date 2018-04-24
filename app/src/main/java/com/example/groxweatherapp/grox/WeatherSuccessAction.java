@@ -17,7 +17,6 @@ public class WeatherSuccessAction implements Action<WeatherModel> {
     public WeatherModel newState(WeatherModel oldState) {
         return oldState.toBuilder()
             .setModelState(SUCCESS)
-            .setRequestMode(weatherResponse.requestMode)
             .setWeather(weatherResponse.weathers)
             .build();
     }

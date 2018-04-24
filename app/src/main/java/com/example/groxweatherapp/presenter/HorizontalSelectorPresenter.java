@@ -2,7 +2,7 @@ package com.example.groxweatherapp.presenter;
 
 import com.example.groxweatherapp.api.WeatherApiClient.RequestMode;
 import com.example.groxweatherapp.grox.WeatherModelStore;
-import com.example.groxweatherapp.grox.WeatherRequestCommand;
+import com.example.groxweatherapp.grox.WeatherRefreshCommand;
 import com.example.groxweatherapp.model.WeatherModel;
 import com.example.groxweatherapp.view.HorizontalSelectorView;
 import com.groupon.grox.Action;
@@ -60,9 +60,8 @@ public class HorizontalSelectorPresenter {
         subscriptions.add(createRequestCommandActions(TEN_DAY).subscribe(weatherModelStore::dispatch, HorizontalSelectorPresenter::onError));
     }
 
-    private Observable<Action> createRequestCommandActions(@RequestMode int requestMode) {
-        final WeatherRequestCommand weatherRequestCommand = new WeatherRequestCommand(requestMode);
-        return weatherRequestCommand.actions();
+    private Observable<? extends Action> createRequestCommandActions(@RequestMode int requestMode) {
+        return new WeatherRefreshCommand(requestMode).actions();
     }
 
     private Observable<WeatherModel> isSuccess() {
