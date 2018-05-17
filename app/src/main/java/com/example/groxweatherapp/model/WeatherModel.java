@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.groxweatherapp.api.WeatherApiClient.TODAY;
-import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.REFRESH;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.INITIATED;
 
 @AutoValue
 public abstract class WeatherModel {
@@ -14,13 +14,13 @@ public abstract class WeatherModel {
     public static WeatherModel INITIAL_STATE = WeatherModel.builder().build();
 
     public enum WeatherModelState {
-        REFRESH, SUCCESS, ERROR
+        INITIATED, REFRESHING, SUCCESS, ERROR
     }
 
     @RequestMode
     public abstract int getRequestMode();
 
-    public abstract WeatherModelState getModelState();
+    public abstract WeatherModelState getState();
 
     public abstract List<Weather> getWeather();
 
@@ -28,7 +28,7 @@ public abstract class WeatherModel {
 
     public static Builder builder() {
         return new AutoValue_WeatherModel.Builder()
-            .setModelState(REFRESH)
+            .setState(INITIATED)
             .setRequestMode(TODAY)
             .setWeather(new ArrayList<>());
     }
@@ -36,7 +36,7 @@ public abstract class WeatherModel {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder setModelState(WeatherModelState modelState);
+        public abstract Builder setState(WeatherModelState modelState);
 
         public abstract Builder setWeather(List<Weather> weathers);
 

@@ -8,10 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ProgressBar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.example.groxweatherapp.grox.WeatherStore;
 import com.example.groxweatherapp.model.Weather;
-import com.example.groxweatherapp.model.WeatherModel;
 import com.example.groxweatherapp.presenter.WeatherMainPresenter;
 import com.example.groxweatherapp.view.WeatherMainView;
 import java.util.List;
@@ -25,36 +23,38 @@ public class WeatherMainActivity extends AppCompatActivity implements WeatherMai
 
     private WeatherStore weatherStore;
     private WeatherMainPresenter weatherMainPresenter;
+    private WeatherListAdapter weatherListAdapter;
 
     @BindView(R.id.horizontal_selector) HorizontalSelector horizontalSelector;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-
-    private WeatherListAdapter weatherListAdapter;
-    private Unbinder unBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         weatherStore = new WeatherStore(INITIAL_STATE);
-        unBinder = ButterKnife.bind(this);
+        ButterKnife.bind(this);
 
-        horizontalSelector.attachWeatherModelStore(weatherStore);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         weatherListAdapter = new WeatherListAdapter();
         recyclerView.setAdapter(weatherListAdapter);
         weatherMainPresenter = new WeatherMainPresenter();
-        weatherMainPresenter.attachPresenter(this, weatherStore);
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        horizontalSelector.attachWeatherModelStore(weatherStore);
+        weatherMainPresenter.attachView(this, weatherStore);
+    }
+
+    @Override
+    protected void onStop() {
         horizontalSelector.detachWeatherModelStore();
-        weatherMainPresenter.detachPresenter();
-        unBinder.unbind();
-        super.onDestroy();
+        weatherMainPresenter.detachView();
+        super.onStop();
     }
 
     @Override
@@ -88,6 +88,7 @@ public class WeatherMainActivity extends AppCompatActivity implements WeatherMai
         Builder builder;
         builder = new Builder(this);
         builder.setTitle(R.string.error_occurred)
+            .setCancelable(false)
             .setMessage(R.string.retry_again_to_continue)
             .setPositiveButton(R.string.retry, (dialog, which) -> weatherMainPresenter.onRetryClick())
             .show();

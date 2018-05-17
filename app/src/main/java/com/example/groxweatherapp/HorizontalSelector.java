@@ -43,11 +43,11 @@ public class HorizontalSelector extends LinearLayout implements HorizontalSelect
     }
 
     public void attachWeatherModelStore(WeatherStore weatherStore) {
-        horizontalSelectorPresenter.attachPresenter(this, weatherStore);
+        horizontalSelectorPresenter.attachView(this, weatherStore);
     }
 
     public void detachWeatherModelStore() {
-        horizontalSelectorPresenter.detachPresenter();
+        horizontalSelectorPresenter.detachView();
     }
 
     @OnClick(R.id.today)

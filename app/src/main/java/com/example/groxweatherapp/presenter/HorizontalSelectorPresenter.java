@@ -1,17 +1,19 @@
 package com.example.groxweatherapp.presenter;
 
 import com.example.groxweatherapp.api.WeatherApiClient.RequestMode;
+import com.example.groxweatherapp.grox.WeatherRequestCommand;
 import com.example.groxweatherapp.grox.WeatherStore;
-import com.example.groxweatherapp.grox.WeatherRefreshCommand;
 import com.example.groxweatherapp.model.WeatherModel;
 import com.example.groxweatherapp.view.HorizontalSelectorView;
 import com.groupon.grox.Action;
 import rx.Observable;
+import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.example.groxweatherapp.api.WeatherApiClient.FIVE_DAY;
 import static com.example.groxweatherapp.api.WeatherApiClient.TEN_DAY;
 import static com.example.groxweatherapp.api.WeatherApiClient.TODAY;
+import static com.example.groxweatherapp.model.WeatherModel.WeatherModelState.SUCCESS;
 import static com.groupon.grox.RxStores.states;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
@@ -21,10 +23,14 @@ public class HorizontalSelectorPresenter {
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private HorizontalSelectorView horizontalSelectorView;
 
-    public void attachPresenter(HorizontalSelectorView horizontalSelectorView, WeatherStore weatherStore) {
+    public void attachView(HorizontalSelectorView horizontalSelectorView, WeatherStore weatherStore) {
         this.horizontalSelectorView = horizontalSelectorView;
         this.weatherStore = weatherStore;
-        subscriptions.add(isSuccess().subscribe(this::onSuccess, HorizontalSelectorPresenter::onError));
+        subscriptions.add(processSuccess());
+    }
+
+    public void detachView() {
+        subscriptions.clear();
     }
 
     private void onSuccess(WeatherModel weatherModel) {
@@ -39,10 +45,6 @@ public class HorizontalSelectorPresenter {
                 horizontalSelectorView.onTenDaySelected();
                 break;
         }
-    }
-
-    public void detachPresenter() {
-        subscriptions.unsubscribe();
     }
 
     public void onTodayClicked() {
@@ -61,13 +63,14 @@ public class HorizontalSelectorPresenter {
     }
 
     private Observable<? extends Action> createRequestCommandActions(@RequestMode int requestMode) {
-        return new WeatherRefreshCommand(requestMode).actions();
+        return new WeatherRequestCommand(requestMode).actions();
     }
 
-    private Observable<WeatherModel> isSuccess() {
+    private Subscription processSuccess() {
         return states(weatherStore)
             .observeOn(mainThread())
-            .filter(model -> model.getModelState() == WeatherModel.WeatherModelState.SUCCESS);
+            .filter(model -> model.getState() == SUCCESS)
+            .subscribe(this::onSuccess, HorizontalSelectorPresenter::onError);
     }
 
     private static void onError(Throwable throwable) {}

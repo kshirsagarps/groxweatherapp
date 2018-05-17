@@ -9,7 +9,7 @@ import rx.schedulers.Schedulers;
 
 public class WeatherRequestCommand implements Command {
 
-    @RequestMode private final int requestMode;
+    private final int requestMode;
 
     public WeatherRequestCommand(@RequestMode int requestMode) {
         this.requestMode = requestMode;
@@ -20,7 +20,9 @@ public class WeatherRequestCommand implements Command {
         return new WeatherApiClient()
             .getWeather(requestMode)
             .subscribeOn(Schedulers.io())
-            .map(weatherResponse -> (Action) new WeatherSuccessAction(weatherResponse))
-            .onErrorReturn(WeatherErrorAction::new);
+            .map(weatherResponse -> new WeatherSuccessAction(weatherResponse, requestMode))
+            .cast(Action.class)
+            .onErrorReturn(throwable -> new WeatherErrorAction(throwable, requestMode))
+            .startWith(new WeatherRefreshAction());
     }
 }
