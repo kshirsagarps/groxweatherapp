@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/today"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/colorAccent"
+        tools:backgroundTint="@color/colorAccent"
         android:layout_weight="1"/>
 
     <Button
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:text="@string/five_days"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/colorAccent"
+        tools:backgroundTint="@color/colorAccent"
         android:layout_weight="1"/>
 
     <Button
@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:text="@string/ten_days"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/colorAccent"
+        tools:backgroundTint="@color/colorAccent"
         android:layout_weight="1"/>
 </merge>
