@@ -32,7 +32,7 @@ class WeatherMainPresenter {
 
     fun onRetryClick() {
         subscriptions.add(
-                WeatherRequestCommand(weatherStore.state.requestMode)
+                WeatherRequestCommand(weatherStore.state.forecastMode)
                         .actions()
                         .subscribe(weatherStore::dispatch, this::onError))
     }

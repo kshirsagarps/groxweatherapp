@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit
 
 class WeatherApiClient {
 
-    fun getWeather(@RequestMode requestMode: Int): Observable<WeatherResponse> {
-        val weathers: List<Weather>  = createWeatherForRequest(requestMode)
+    fun getWeather(@ForecastMode forecastMode: Int): Observable<WeatherResponse> {
+        val weathers: List<Weather>  = createWeatherForRequest(forecastMode)
         val weatherResponse = WeatherResponse(weathers)
         var observable = Observable.just(weatherResponse)
         if (random.nextInt() % ERROR_RATE == 0) {
@@ -23,10 +23,10 @@ class WeatherApiClient {
         return observable.delay(LATENCY_IN_MS.toLong(), TimeUnit.MILLISECONDS)
     }
 
-    private fun createWeatherForRequest(@RequestMode requestMode: Int): List<Weather> {
+    private fun createWeatherForRequest(@ForecastMode forecastMode: Int): List<Weather> {
         val weatherList = ArrayList<Weather>()
 
-        when (requestMode) {
+        when (forecastMode) {
             TODAY -> return createAndAddWeatherToList(1, weatherList)
             FIVE_DAY -> return createAndAddWeatherToList(5, weatherList)
             TEN_DAY -> return createAndAddWeatherToList(10, weatherList)
@@ -70,7 +70,7 @@ class WeatherApiClient {
 
         @IntDef(TODAY.toLong(), FIVE_DAY.toLong(), TEN_DAY.toLong())
         @Retention(SOURCE)
-        annotation class RequestMode
+        annotation class ForecastMode
 
         const val TODAY = 0
         const val FIVE_DAY = 1

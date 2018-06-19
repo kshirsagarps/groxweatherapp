@@ -1,7 +1,7 @@
 package com.example.groxweatherapp.presenter
 
 import com.example.groxweatherapp.api.WeatherApiClient.Companion.FIVE_DAY
-import com.example.groxweatherapp.api.WeatherApiClient.Companion.RequestMode
+import com.example.groxweatherapp.api.WeatherApiClient.Companion.ForecastMode
 import com.example.groxweatherapp.api.WeatherApiClient.Companion.TEN_DAY
 import com.example.groxweatherapp.api.WeatherApiClient.Companion.TODAY
 import com.example.groxweatherapp.grox.WeatherRequestCommand
@@ -33,7 +33,7 @@ class HorizontalSelectorPresenter {
     }
 
     private fun onSuccess(weatherModel: WeatherModel) {
-        when (weatherModel.requestMode) {
+        when (weatherModel.forecastMode) {
             TODAY -> horizontalSelectorView.onTodaySelected()
             FIVE_DAY -> horizontalSelectorView.onFiveDaySelected()
             TEN_DAY -> horizontalSelectorView.onTenDaySelected()
@@ -55,8 +55,8 @@ class HorizontalSelectorPresenter {
         subscriptions.add(createRequestCommandActions(TEN_DAY).subscribe(weatherStore::dispatch, this::onError))
     }
 
-    private fun createRequestCommandActions(@RequestMode requestMode: Int): Observable<out Action<WeatherModel>> {
-        return WeatherRequestCommand(requestMode).actions()
+    private fun createRequestCommandActions(@ForecastMode forecastMode: Int): Observable<out Action<WeatherModel>> {
+        return WeatherRequestCommand(forecastMode).actions()
     }
 
     private fun processSuccess(): Subscription {
