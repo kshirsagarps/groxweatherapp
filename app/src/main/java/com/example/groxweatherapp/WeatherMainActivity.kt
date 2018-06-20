@@ -74,7 +74,7 @@ class WeatherMainActivity : AppCompatActivity(), WeatherMainView {
         Builder(this).setTitle(R.string.error_occurred)
                 .setCancelable(false)
                 .setMessage(R.string.retry_again_to_continue)
-                .setPositiveButton(R.string.retry, { dialog, which -> weatherMainPresenter.onRetryClick() })
+                .setPositiveButton(R.string.retry) { dialog, which -> weatherMainPresenter.onRetryClick() }
                 .show()
     }
 }
