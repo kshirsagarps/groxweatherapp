@@ -5,7 +5,7 @@ import com.example.groxweatherapp.api.WeatherApiClient.Companion.TODAY
 import com.example.groxweatherapp.model.WeatherModel.Companion.WeatherModelState.INITIATED
 
 
-data class WeatherModel(@ForecastMode val forecastMode: Int, val state: WeatherModelState, val weather: List<Weather>) {
+data class WeatherModel(@ForecastMode val forecastMode: Int, val state: WeatherModelState, val weatherList: List<Weather>) {
     companion object {
         enum class WeatherModelState {
             INITIATED, REFRESHING, SUCCESS, ERROR

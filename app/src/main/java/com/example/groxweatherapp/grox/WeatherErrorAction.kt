@@ -12,6 +12,6 @@ class WeatherErrorAction(@ForecastMode private val forecastMode: Int) : Action<W
         return oldState.copy(
                 state = ERROR,
                 forecastMode = forecastMode,
-                weather = emptyList())
+                weatherList = emptyList())
     }
 }

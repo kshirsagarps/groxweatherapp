@@ -12,6 +12,6 @@ class WeatherSuccessAction(private val weatherResponse: WeatherResponse, @Foreca
         return oldState.copy(
                 state = SUCCESS,
                 forecastMode = forecastMode,
-                weather = weatherResponse.weathers)
+                weatherList = weatherResponse.weathers)
     }
 }

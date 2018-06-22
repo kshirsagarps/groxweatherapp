@@ -75,13 +75,13 @@ class WeatherMainPresenter {
     private fun onSuccess(weatherModel: WeatherModel) {
         weatherMainView.hideSpinner()
         weatherMainView.showList()
-        weatherMainView.showWeather(weatherModel.weather)
+        weatherMainView.showWeather(weatherModel.weatherList)
     }
 
     private fun onError(weatherModel: WeatherModel) {
         weatherMainView.hideSpinner()
         weatherMainView.showList()
-        weatherMainView.showWeather(weatherModel.weather)
+        weatherMainView.showWeather(weatherModel.weatherList)
         weatherMainView.showErrorDialog()
     }
 
