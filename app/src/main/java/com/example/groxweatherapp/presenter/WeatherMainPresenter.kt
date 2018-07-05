@@ -11,15 +11,12 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.subscriptions.CompositeSubscription
 
-class WeatherMainPresenter {
-
-    private lateinit var weatherStore: WeatherStore
-    private lateinit var weatherMainView: WeatherMainView
+class WeatherMainPresenter(private val weatherStore: WeatherStore) {
+    private var weatherMainView: WeatherMainView? = null
     private val subscriptions = CompositeSubscription()
 
-    fun attachView(weatherMainView: WeatherMainView, weatherStore: WeatherStore) {
+    fun attachView(weatherMainView: WeatherMainView) {
         this.weatherMainView = weatherMainView
-        this.weatherStore = weatherStore
         subscriptions.add(processInitiated())
         subscriptions.add(processRefreshing())
         subscriptions.add(processSuccess())
@@ -28,6 +25,7 @@ class WeatherMainPresenter {
 
     fun detachView() {
         subscriptions.clear()
+        weatherMainView = null
     }
 
     fun onRetryClick() {
@@ -68,21 +66,21 @@ class WeatherMainPresenter {
     }
 
     private fun onRefresh() {
-        weatherMainView.showSpinner()
-        weatherMainView.hideList()
+        weatherMainView?.showSpinner()
+        weatherMainView?.hideList()
     }
 
     private fun onSuccess(weatherModel: WeatherModel) {
-        weatherMainView.hideSpinner()
-        weatherMainView.showList()
-        weatherMainView.showWeather(weatherModel.weatherList)
+        weatherMainView?.hideSpinner()
+        weatherMainView?.showList()
+        weatherMainView?.showWeather(weatherModel.weatherList)
     }
 
     private fun onError(weatherModel: WeatherModel) {
-        weatherMainView.hideSpinner()
-        weatherMainView.showList()
-        weatherMainView.showWeather(weatherModel.weatherList)
-        weatherMainView.showErrorDialog()
+        weatherMainView?.hideSpinner()
+        weatherMainView?.showList()
+        weatherMainView?.showWeather(weatherModel.weatherList)
+        weatherMainView?.showErrorDialog()
     }
 
     private fun onError(throwable: Throwable) {

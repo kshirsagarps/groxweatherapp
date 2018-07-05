@@ -39,12 +39,12 @@ class HorizontalSelector : LinearLayout, HorizontalSelectorView {
         super.onFinishInflate()
         inflate(context, R.layout.horizontal_weather_view, this)
         ButterKnife.bind(this)
-        horizontalSelectorPresenter = HorizontalSelectorPresenter()
-        addClickListeners()
     }
 
     fun attachWeatherModelStore(weatherStore: WeatherStore) {
-        horizontalSelectorPresenter.attachView(this, weatherStore)
+        horizontalSelectorPresenter = HorizontalSelectorPresenter(weatherStore)
+        horizontalSelectorPresenter.attachView(this)
+        addClickListeners()
     }
 
     fun detachWeatherModelStore() {

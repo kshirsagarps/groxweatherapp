@@ -16,42 +16,40 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.subscriptions.CompositeSubscription
 
-class HorizontalSelectorPresenter {
-
-    private lateinit var weatherStore: WeatherStore
-    private lateinit var horizontalSelectorView: HorizontalSelectorView
+class HorizontalSelectorPresenter(private val weatherStore: WeatherStore) {
+    private var horizontalSelectorView: HorizontalSelectorView? = null
     private val subscriptions = CompositeSubscription()
 
-    fun attachView(horizontalSelectorView: HorizontalSelectorView, weatherStore: WeatherStore) {
+    fun attachView(horizontalSelectorView: HorizontalSelectorView) {
         this.horizontalSelectorView = horizontalSelectorView
-        this.weatherStore = weatherStore
         subscriptions.add(processSuccess())
     }
 
     fun detachView() {
         subscriptions.clear()
+        horizontalSelectorView = null
     }
 
     private fun onSuccess(weatherModel: WeatherModel) {
         when (weatherModel.forecastMode) {
-            TODAY -> horizontalSelectorView.onTodaySelected()
-            FIVE_DAY -> horizontalSelectorView.onFiveDaySelected()
-            TEN_DAY -> horizontalSelectorView.onTenDaySelected()
+            TODAY -> horizontalSelectorView?.onTodaySelected()
+            FIVE_DAY -> horizontalSelectorView?.onFiveDaySelected()
+            TEN_DAY -> horizontalSelectorView?.onTenDaySelected()
         }
     }
 
     fun onTodayClicked() {
-        horizontalSelectorView.onTodaySelected()
+        horizontalSelectorView?.onTodaySelected()
         subscriptions.add(createRequestCommandActions(TODAY).subscribe(weatherStore::dispatch, this::onError))
     }
 
     fun onFiveDayClicked() {
-        horizontalSelectorView.onFiveDaySelected()
+        horizontalSelectorView?.onFiveDaySelected()
         subscriptions.add(createRequestCommandActions(FIVE_DAY).subscribe(weatherStore::dispatch, this::onError))
     }
 
     fun onTenDayClicked() {
-        horizontalSelectorView.onTenDaySelected()
+        horizontalSelectorView?.onTenDaySelected()
         subscriptions.add(createRequestCommandActions(TEN_DAY).subscribe(weatherStore::dispatch, this::onError))
     }
 

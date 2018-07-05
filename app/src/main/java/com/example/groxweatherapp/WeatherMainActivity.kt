@@ -34,13 +34,13 @@ class WeatherMainActivity : AppCompatActivity(), WeatherMainView {
         recyclerView.layoutManager = LinearLayoutManager(this)
         weatherListAdapter = WeatherListAdapter()
         recyclerView.adapter = weatherListAdapter
-        weatherMainPresenter = WeatherMainPresenter()
+        weatherMainPresenter = WeatherMainPresenter(weatherStore)
     }
 
     override fun onStart() {
         super.onStart()
         horizontalSelector.attachWeatherModelStore(weatherStore)
-        weatherMainPresenter.attachView(this, weatherStore)
+        weatherMainPresenter.attachView(this)
     }
 
     override fun onStop() {
